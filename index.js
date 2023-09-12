@@ -7,13 +7,10 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 
-mongoose.connect(
-  "mongodb+srv://ywauran:GVLWCMW83ydLZFEX@dashboard.cjetrwd.mongodb.net/?retryWrites=true&w=majority",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  }
-);
+mongoose.connect("mongodb://localhost:27017/db_dashboard", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // Anda dapat langsung mengakses koleksi MongoDB tanpa skema
 const db = mongoose.connection;
@@ -22,7 +19,7 @@ db.once("open", function () {
   console.log("Connected to MongoDB");
 });
 
-app.get("/api/smk/teacher", async (req, res) => {
+app.get("/api/slb/teacher", async (req, res) => {
   const { page = 1, limit = 5, center } = req.query;
   const skip = (page - 1) * limit;
 
@@ -136,13 +133,22 @@ app.get("/api/slb", async (req, res) => {
   try {
     const collection = db.collection("slb");
 
-    // Agregasi untuk mengelompokkan data berdasarkan Cost Center
+    // Agregasi untuk mengelompokkan data berdasarkan Org Unit ID dan memilih satu dokumen dari setiap kelompok
     const aggregationPipeline = [
+      {
+        $group: {
+          _id: "$Org Unit ID",
+          document: { $first: "$$ROOT" },
+        },
+      },
       {
         $skip: skip,
       },
       {
         $limit: parseInt(limit),
+      },
+      {
+        $replaceRoot: { newRoot: "$document" },
       },
     ];
 
@@ -179,6 +185,17 @@ app.get("/api/slb", async (req, res) => {
         trueCountTeacher++;
       }
     });
+
+    data.sort((a, b) => {
+      if (b.trueCountStudent !== a.trueCountStudent) {
+        return b.trueCountStudent - a.trueCountStudent;
+      } else {
+        return a["Org Unit ID"].localeCompare(b["Org Unit ID"]);
+      }
+    });
+
+    console.log(data);
+
     const result = {
       data,
       trueCountStudent,
@@ -307,13 +324,22 @@ app.get("/api/smk", async (req, res) => {
   try {
     const collection = db.collection("smk");
 
-    // Agregasi untuk mengelompokkan data berdasarkan Cost Center
+    // Agregasi untuk mengelompokkan data berdasarkan Org Unit ID dan memilih satu dokumen dari setiap kelompok
     const aggregationPipeline = [
+      {
+        $group: {
+          _id: "$Org Unit ID",
+          document: { $first: "$$ROOT" },
+        },
+      },
       {
         $skip: skip,
       },
       {
         $limit: parseInt(limit),
+      },
+      {
+        $replaceRoot: { newRoot: "$document" },
       },
     ];
 
@@ -350,6 +376,17 @@ app.get("/api/smk", async (req, res) => {
         trueCountTeacher++;
       }
     });
+
+    data.sort((a, b) => {
+      if (b.trueCountStudent !== a.trueCountStudent) {
+        return b.trueCountStudent - a.trueCountStudent;
+      } else {
+        return a["Org Unit ID"].localeCompare(b["Org Unit ID"]);
+      }
+    });
+
+    console.log(data);
+
     const result = {
       data,
       trueCountStudent,
@@ -478,13 +515,22 @@ app.get("/api/sma", async (req, res) => {
   try {
     const collection = db.collection("sma");
 
-    // Agregasi untuk mengelompokkan data berdasarkan Cost Center
+    // Agregasi untuk mengelompokkan data berdasarkan Org Unit ID dan memilih satu dokumen dari setiap kelompok
     const aggregationPipeline = [
+      {
+        $group: {
+          _id: "$Org Unit ID",
+          document: { $first: "$$ROOT" },
+        },
+      },
       {
         $skip: skip,
       },
       {
         $limit: parseInt(limit),
+      },
+      {
+        $replaceRoot: { newRoot: "$document" },
       },
     ];
 
@@ -521,6 +567,17 @@ app.get("/api/sma", async (req, res) => {
         trueCountTeacher++;
       }
     });
+
+    data.sort((a, b) => {
+      if (b.trueCountStudent !== a.trueCountStudent) {
+        return b.trueCountStudent - a.trueCountStudent;
+      } else {
+        return a["Org Unit ID"].localeCompare(b["Org Unit ID"]);
+      }
+    });
+
+    console.log(data);
+
     const result = {
       data,
       trueCountStudent,
@@ -533,6 +590,10 @@ app.get("/api/sma", async (req, res) => {
     console.log(error);
     res.status(500).json({ message: "Server Error" });
   }
+});
+
+app.get("/", (req, res) => {
+  res.send("<h1>Backend Dashboard Belajar ID</h1>");
 });
 
 app.listen(port, () => {
