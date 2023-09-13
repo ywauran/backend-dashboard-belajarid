@@ -203,6 +203,7 @@ app.get("/api/slb", async (req, res) => {
       trueCountTeacher,
       falseCountTeacher,
     };
+    console.log(result);
     res.json(result);
   } catch (error) {
     console.log(error);
