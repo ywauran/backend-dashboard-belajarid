@@ -7,10 +7,13 @@ const port = process.env.PORT || 5000;
 
 app.use(cors());
 
-mongoose.connect("mongodb://localhost:27017/db_dashboard", {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+mongoose.connect(
+  "mongodb+srv://ywauran:Oj5eEieDzUmlfQPl@dashboard.cjetrwd.mongodb.net/dashboard?retryWrites=true&w=majority",
+  {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  }
+);
 
 // Anda dapat langsung mengakses koleksi MongoDB tanpa skema
 const db = mongoose.connection;
@@ -64,7 +67,7 @@ app.get("/api/slb/teacher", async (req, res) => {
       falseCount,
       data,
     };
-
+    console.log(result);
     res.json(result);
   } catch (error) {
     console.error(error);
@@ -86,7 +89,6 @@ app.get("/api/slb/student", async (req, res) => {
       .limit(parseInt(limit))
       .toArray();
 
-    console.log(data);
     const allData = await collection
       .find({ "Employee Title": "student", "Org Unit ID": center }) // Filter data for "teacher" only
       .toArray();
@@ -194,8 +196,6 @@ app.get("/api/slb", async (req, res) => {
       }
     });
 
-    console.log(data);
-
     const result = {
       data,
       trueCountStudent,
@@ -277,7 +277,6 @@ app.get("/api/smk/student", async (req, res) => {
       .limit(parseInt(limit))
       .toArray();
 
-    console.log(data);
     const allData = await collection
       .find({ "Employee Title": "student", "Org Unit ID": center }) // Filter data for "teacher" only
       .toArray();
@@ -385,8 +384,6 @@ app.get("/api/smk", async (req, res) => {
       }
     });
 
-    console.log(data);
-
     const result = {
       data,
       trueCountStudent,
@@ -467,8 +464,6 @@ app.get("/api/sma/student", async (req, res) => {
       .skip(skip)
       .limit(parseInt(limit))
       .toArray();
-
-    console.log(data);
     const allData = await collection
       .find({ "Employee Title": "student", "Org Unit ID": center }) // Filter data for "teacher" only
       .toArray();
@@ -575,8 +570,6 @@ app.get("/api/sma", async (req, res) => {
         return a["Org Unit ID"].localeCompare(b["Org Unit ID"]);
       }
     });
-
-    console.log(data);
 
     const result = {
       data,
