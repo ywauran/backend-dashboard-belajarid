@@ -3,14 +3,9 @@ import mongoose from "mongoose";
 import cors from "cors";
 
 const app = express();
-const port = process.env.PORT || 5000;
+const port = 5000;
 
-app.use(
-  cors({
-    credentials: true,
-    origin: "https://dashboard-dikda-git-main-ywauran.vercel.app/",
-  })
-);
+app.use(cors());
 
 mongoose.connect(
   "mongodb+srv://ywauran:Oj5eEieDzUmlfQPl@dashboard.cjetrwd.mongodb.net/db_dashboard?retryWrites=true&w=majority",
