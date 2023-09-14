@@ -5,7 +5,12 @@ import cors from "cors";
 const app = express();
 const port = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: "https://dashboard-dikda.vercel.app/",
+  })
+);
 
 mongoose.connect(
   "mongodb+srv://ywauran:Oj5eEieDzUmlfQPl@dashboard.cjetrwd.mongodb.net/db_dashboard?retryWrites=true&w=majority",
