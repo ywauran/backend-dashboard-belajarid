@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 app.use(
   cors({
     credentials: true,
-    origin: "https://dashboard-dikda.vercel.app/",
+    origin: "https://dashboard-dikda-git-main-ywauran.vercel.app/",
   })
 );
 
